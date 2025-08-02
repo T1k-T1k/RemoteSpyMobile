@@ -1133,78 +1133,40 @@ local Window = TS.import(script, script.Parent.Parent, "Window").default
 local activateAction = TS.import(script, script.Parent.Parent.Parent, "reducers", "action-bar").activateAction
 local pure = TS.import(script, TS.getModule(script, "@rbxts", "roact-hooked").out).pure
 local useRootDispatch = TS.import(script, script.Parent.Parent.Parent, "hooks", "use-root-store").useRootDispatch
-local Roact = require(game.ReplicatedStorage.Roact)
 local function MainWindow()
 	local dispatch = useRootDispatch()
-	local windowWidth = 1080
-	local windowHeight = 700
-	local scale = 0.6
+	local windowWidth = 900
+	local windowHeight = 600
 
-	local dragging, dragStart, startPos = Roact.createBinding(false), nil, nil
-	local position, setPosition = Roact.createBinding(UDim2.new(0.5, 0, 0.5, 0))
-
-	local function onInputBegan(rbx, input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-			dragging:set(true)
-			dragStart = input.Position
-			startPos = rbx.Position
-			input.Changed:Connect(function()
-				if input.UserInputState == Enum.UserInputState.End then
-					dragging:set(false)
-				end
-			end)
-		end
-	end
-
-	local function onInputChanged(_, input)
-		if dragging:get() and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-			local delta = input.Position - dragStart
-			setPosition(UDim2.new(
-				startPos.X.Scale, startPos.X.Offset + delta.X,
-				startPos.Y.Scale, startPos.Y.Offset + delta.Y
-			))
-		end
-	end
-
-	return Roact.createElement("ScreenGui", { ResetOnSpawn = false }, {
-		DraggableFrame = Roact.createElement("Frame", {
-			Size = UDim2.new(0, windowWidth * scale, 0, windowHeight * scale),
-			AnchorPoint = Vector2.new(0.5, 0.5),
-			Position = position,
-			BackgroundTransparency = 1,
-
-			[Roact.Event.InputBegan] = onInputBegan,
-			[Roact.Event.InputChanged] = onInputChanged,
+	return Roact.createElement(Root, {}, {
+		Roact.createElement(Window.Root, {
+			initialSize = UDim2.new(0, windowWidth, 0, windowHeight),
+			initialPosition = UDim2.new(0.5, -windowWidth / 2, 0.5, -windowHeight / 2),
 		}, {
-			WindowRoot = Roact.createElement(Window.Root, {
-				initialSize = UDim2.new(0, windowWidth, 0, windowHeight),
-				initialPosition = UDim2.new(0, 0, 0, 0),
-			}, {
-				UIScale = Roact.createElement("UIScale", {
-					Scale = scale,
-				}),
-				Roact.createElement(Window.DropShadow),
-				Roact.createElement(AcrylicBackground),
-				Roact.createElement(ActionBar),
-				Roact.createElement(TabGroup),
-				Roact.createElement(PageGroup),
-				Roact.createElement(SidePanel.Root, {}, {
-					Roact.createElement(Traceback),
-					Roact.createElement(FunctionTree),
-				}),
-				Roact.createElement(Window.TitleBar, {
-					onClose = function()
-						return dispatch(activateAction("close"))
-					end,
-					caption = '<font color="#FFFFFF">RemoteSpy</font>    <font color="#B2B2B2">' .. ("0.2.0-alpha" .. "</font>"),
-					captionTransparency = 0.1,
-					icon = "rbxassetid://9886981409",
-				}),
-				Roact.createElement(Window.Resize, {
-					minSize = Vector2.new(650, 450),
-				}),
+			UIScale = Roact.createElement("UIScale", {
+				Scale = 0.6,
 			}),
-		})
+			Roact.createElement(Window.DropShadow),
+			Roact.createElement(AcrylicBackground),
+			Roact.createElement(ActionBar),
+			Roact.createElement(TabGroup),
+			Roact.createElement(PageGroup),
+			Roact.createElement(SidePanel.Root, {}, {
+				Roact.createElement(Traceback),
+				Roact.createElement(FunctionTree),
+			}),
+			Roact.createElement(Window.TitleBar, {
+				onClose = function()
+					return dispatch(activateAction("close"))
+				end,
+				caption = '<font color="#FFFFFF">RemoteSpy</font>    <font color="#B2B2B2">' .. ("0.2.0-alpha" .. "</font>"),
+				captionTransparency = 0.1,
+				icon = "rbxassetid://9886981409",
+			}),
+			Roact.createElement(Window.Resize, {
+				minSize = Vector2.new(650, 450),
+			}),
+		}),
 	})
 end
 local default = pure(MainWindow)
