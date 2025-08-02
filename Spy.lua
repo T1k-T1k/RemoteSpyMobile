@@ -3391,8 +3391,8 @@ local Window = TS.import(script, script.Parent).default
 return function(target)
 	local handle = Roact.mount(Roact.createElement(Root, {}, {
 		Roact.createElement(Window.Root, {
-			initialSize = UDim2.new(0, 1080, 0, 700),
-			initialPosition = UDim2.new(0.5, -1080 / 2, 0.5, -700 / 2),
+			initialSize = UDim2.new(0, 250, 0, 250),
+			initialPosition = UDim2.new(0.5, -125, 0.5, -125),
 		}, {
 			Roact.createElement(Window.DropShadow),
 			Roact.createElement(Window.Background),
