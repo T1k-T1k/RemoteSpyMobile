@@ -1135,9 +1135,9 @@ local pure = TS.import(script, TS.getModule(script, "@rbxts", "roact-hooked").ou
 local useRootDispatch = TS.import(script, script.Parent.Parent.Parent, "hooks", "use-root-store").useRootDispatch
 local function MainWindow()
 	local dispatch = useRootDispatch()
-	local windowWidth = 900
-	local windowHeight = 600
-	local scale = 0.6
+	local windowWidth = 600
+	local windowHeight = 400
+	local scale = 0.5
 
 	return Roact.createElement(Root, {}, {
 		Roact.createElement(Window.Root, {
