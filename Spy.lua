@@ -1140,32 +1140,39 @@ local function MainWindow()
 	local scale = 0.6
 
 	return Roact.createElement(Root, {}, {
-		Roact.createElement(Window.Root, {
-			initialSize = UDim2.new(0, windowWidth, 0, windowHeight),
-			initialPosition = UDim2.new(0.5, -(windowWidth * scale) / 2, 0.5, -(windowHeight * scale) / 2),
+		Roact.createElement("Frame", {
+			Size = UDim2.new(0, windowWidth * scale, 0, windowHeight * scale),
+			AnchorPoint = Vector2.new(0.5, 0.5),
+			Position = UDim2.new(0.5, 0, 0.5, 0),
+			BackgroundTransparency = 1,
 		}, {
-			UIScale = Roact.createElement("UIScale", {
-				Scale = scale,
-			}),
-			Roact.createElement(Window.DropShadow),
-			Roact.createElement(AcrylicBackground),
-			Roact.createElement(ActionBar),
-			Roact.createElement(TabGroup),
-			Roact.createElement(PageGroup),
-			Roact.createElement(SidePanel.Root, {}, {
-				Roact.createElement(Traceback),
-				Roact.createElement(FunctionTree),
-			}),
-			Roact.createElement(Window.TitleBar, {
-				onClose = function()
-					return dispatch(activateAction("close"))
-				end,
-				caption = '<font color="#FFFFFF">RemoteSpy</font>    <font color="#B2B2B2">' .. ("0.2.0-alpha" .. "</font>"),
-				captionTransparency = 0.1,
-				icon = "rbxassetid://9886981409",
-			}),
-			Roact.createElement(Window.Resize, {
-				minSize = Vector2.new(650, 450),
+			Roact.createElement(Window.Root, {
+				initialSize = UDim2.new(0, windowWidth, 0, windowHeight),
+				initialPosition = UDim2.new(0, 0, 0, 0), -- по умолчанию
+			}, {
+				UIScale = Roact.createElement("UIScale", {
+					Scale = scale,
+				}),
+				Roact.createElement(Window.DropShadow),
+				Roact.createElement(AcrylicBackground),
+				Roact.createElement(ActionBar),
+				Roact.createElement(TabGroup),
+				Roact.createElement(PageGroup),
+				Roact.createElement(SidePanel.Root, {}, {
+					Roact.createElement(Traceback),
+					Roact.createElement(FunctionTree),
+				}),
+				Roact.createElement(Window.TitleBar, {
+					onClose = function()
+						return dispatch(activateAction("close"))
+					end,
+					caption = '<font color="#FFFFFF">RemoteSpy</font>    <font color="#B2B2B2">' .. ("0.2.0-alpha" .. "</font>"),
+					captionTransparency = 0.1,
+					icon = "rbxassetid://9886981409",
+				}),
+				Roact.createElement(Window.Resize, {
+					minSize = Vector2.new(650, 450),
+				}),
 			}),
 		}),
 	})
