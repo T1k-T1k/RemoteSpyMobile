@@ -1137,14 +1137,15 @@ local function MainWindow()
 	local dispatch = useRootDispatch()
 	local windowWidth = 900
 	local windowHeight = 600
+	local scale = 0.6
 
 	return Roact.createElement(Root, {}, {
 		Roact.createElement(Window.Root, {
 			initialSize = UDim2.new(0, windowWidth, 0, windowHeight),
-			initialPosition = UDim2.new(0.5, -windowWidth / 2, 0.5, -windowHeight / 2),
+			initialPosition = UDim2.new(0.5, -(windowWidth * scale) / 2, 0.5, -(windowHeight * scale) / 2),
 		}, {
 			UIScale = Roact.createElement("UIScale", {
-				Scale = 0.6,
+				Scale = scale,
 			}),
 			Roact.createElement(Window.DropShadow),
 			Roact.createElement(AcrylicBackground),
