@@ -1135,13 +1135,17 @@ local pure = TS.import(script, TS.getModule(script, "@rbxts", "roact-hooked").ou
 local useRootDispatch = TS.import(script, script.Parent.Parent.Parent, "hooks", "use-root-store").useRootDispatch
 local function MainWindow()
 	local dispatch = useRootDispatch()
+	local windowWidth = 1080
+	local windowHeight = 700
+	local scale = 0.6
+
 	return Roact.createElement(Root, {}, {
 		Roact.createElement(Window.Root, {
-			initialSize = UDim2.new(0, 1080, 0, 700),
-			initialPosition = UDim2.new(0.5, -540, 0.5, -350),
+			initialSize = UDim2.new(0, windowWidth, 0, windowHeight),
+			initialPosition = UDim2.new(0.5, -(windowWidth * scale) / 2, 0.5, -(windowHeight * scale) / 2),
 		}, {
 			UIScale = Roact.createElement("UIScale", {
-				Scale = 0.6,
+				Scale = scale,
 			}),
 			Roact.createElement(Window.DropShadow),
 			Roact.createElement(AcrylicBackground),
