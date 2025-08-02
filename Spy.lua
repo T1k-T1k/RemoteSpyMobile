@@ -1135,14 +1135,45 @@ local pure = TS.import(script, TS.getModule(script, "@rbxts", "roact-hooked").ou
 local useRootDispatch = TS.import(script, script.Parent.Parent.Parent, "hooks", "use-root-store").useRootDispatch
 local function MainWindow()
 	local dispatch = useRootDispatch()
-	local windowWidth = 600
-	local windowHeight = 400
-	local scale = 0.5
+	local windowWidth = 900
+	local windowHeight = 600
+	local scale = 0.6
+
+	-- Храним текущую позицию окна
+	local position, setPosition = Roact.createBinding(UDim2.new(0.5, -(windowWidth * scale) / 2, 0.5, -(windowHeight * scale) / 2))
+	local dragging = false
+	local dragStart = nil
+	local startPosition = nil
+
+	-- Обработка начала перетаскивания
+	local function onInputBegan(rbx, input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = true
+			dragStart = input.Position
+			startPosition = position:getValue()
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					dragging = false
+				end
+			end)
+		end
+	end
+
+	-- Обработка перемещения
+	local function onInputChanged(_, input)
+		if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+			local delta = input.Position - dragStart
+			setPosition(UDim2.new(
+				startPosition.X.Scale, startPosition.X.Offset + delta.X,
+				startPosition.Y.Scale, startPosition.Y.Offset + delta.Y
+			))
+		end
+	end
 
 	return Roact.createElement(Root, {}, {
 		Roact.createElement(Window.Root, {
 			initialSize = UDim2.new(0, windowWidth, 0, windowHeight),
-			initialPosition = UDim2.new(0.5, -(windowWidth * scale) / 2, 0.5, -(windowHeight * scale) / 2),
+			initialPosition = position,
 		}, {
 			UIScale = Roact.createElement("UIScale", {
 				Scale = scale,
@@ -1156,6 +1187,7 @@ local function MainWindow()
 				Roact.createElement(Traceback),
 				Roact.createElement(FunctionTree),
 			}),
+			-- TitleBar с перетаскиванием
 			Roact.createElement(Window.TitleBar, {
 				onClose = function()
 					return dispatch(activateAction("close"))
@@ -1163,6 +1195,9 @@ local function MainWindow()
 				caption = '<font color="#FFFFFF">RemoteSpy</font>    <font color="#B2B2B2">' .. ("0.2.0-alpha" .. "</font>"),
 				captionTransparency = 0.1,
 				icon = "rbxassetid://9886981409",
+
+				[Roact.Event.InputBegan] = onInputBegan,
+				[Roact.Event.InputChanged] = onInputChanged,
 			}),
 			Roact.createElement(Window.Resize, {
 				minSize = Vector2.new(650, 450),
