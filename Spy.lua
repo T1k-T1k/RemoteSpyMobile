@@ -1136,9 +1136,9 @@ local useRootDispatch = TS.import(script, script.Parent.Parent.Parent, "hooks", 
 local UserInputService = game:GetService("UserInputService")
 local function MainWindow()
 	local dispatch = useRootDispatch()
-	local windowWidth = 900
-	local windowHeight = 600
-	local scale = 0.6
+	local windowWidth = 600
+	local windowHeight = 400
+	local scale = 0.5
 
 	local position, setPosition = Roact.createBinding(
 		UDim2.new(0.5, -(windowWidth * scale) / 2, 0.5, -(windowHeight * scale) / 2)
@@ -3727,27 +3727,35 @@ local function WindowTitleBar(_param)
 		if not dragStart then
 			return nil
 		end
+	
 		local startPos = startPosition:getValue()
 		local shouldMinimize = maximized
-		local mouseMoved = UserInputService.InputChanged:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseMovement then
-				local current = UserInputService:GetMouseLocation()
-				local delta = current - dragStart
+	
+		local inputChangedConn = UserInputService.InputChanged:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+				local currentPos = if input.UserInputType == Enum.UserInputType.Touch
+					then input.Position
+					else UserInputService:GetMouseLocation()
+	
+				local delta = currentPos - dragStart
 				setPosition(startPos + delta)
+	
 				if shouldMinimize then
 					shouldMinimize = false
 					setMaximized(false)
 				end
 			end
 		end)
-		local mouseUp = UserInputService.InputEnded:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseButton1 then
+	
+		local inputEndedConn = UserInputService.InputEnded:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 				setDragStart(nil)
 			end
 		end)
+	
 		return function()
-			mouseMoved:Disconnect()
-			mouseUp:Disconnect()
+			inputChangedConn:Disconnect()
+			inputEndedConn:Disconnect()
 		end
 	end, { dragStart })
 	local _attributes = {
