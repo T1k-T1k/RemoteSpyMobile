@@ -1134,34 +1134,34 @@ local activateAction = TS.import(script, script.Parent.Parent.Parent, "reducers"
 local pure = TS.import(script, TS.getModule(script, "@rbxts", "roact-hooked").out).pure
 local useRootDispatch = TS.import(script, script.Parent.Parent.Parent, "hooks", "use-root-store").useRootDispatch
 local function MainWindow()
-    local dispatch = useRootDispatch()
-    return Roact.createElement(Root, {}, {
-        Roact.createElement(Window.Root, {
-            initialSize = UDim2.new(0, 600, 0, 400), -- Changed from (0, 1080, 0, 700)
-            initialPosition = UDim2.new(0.5, -300, 0.5, -200), -- Changed from (0.5, -540, 0.5, -350)
-        }, {
-            Roact.createElement(Window.DropShadow),
-            Roact.createElement(AcrylicBackground),
-            Roact.createElement(ActionBar),
-            Roact.createElement(TabGroup),
-            Roact.createElement(PageGroup),
-            Roact.createElement(SidePanel.Root, {}, {
-                Roact.createElement(Traceback),
-                Roact.createElement(FunctionTree),
-            }),
-            Roact.createElement(Window.TitleBar, {
-                onClose = function()
-                    return dispatch(activateAction("close"))
-                end,
-                caption = '<font color="#FFFFFF">RemoteSpy</font>    <font color="#B2B2B2">' .. ("0.2.0-alpha" .. "</font>"),
-                captionTransparency = 0.1,
-                icon = "rbxassetid://9886981409",
-            }),
-            Roact.createElement(Window.Resize, {
-                minSize = Vector2.new(600, 400), -- Changed from (650, 450)
-            }),
-        }),
-    })
+	local dispatch = useRootDispatch()
+	return Roact.createElement(Root, {}, {
+		Roact.createElement(Window.Root, {
+			initialSize = UDim2.new(0, 1080, 0, 700),
+			initialPosition = UDim2.new(0.5, -540, 0.5, -350),
+		}, {
+			Roact.createElement(Window.DropShadow),
+			Roact.createElement(AcrylicBackground),
+			Roact.createElement(ActionBar),
+			Roact.createElement(TabGroup),
+			Roact.createElement(PageGroup),
+			Roact.createElement(SidePanel.Root, {}, {
+				Roact.createElement(Traceback),
+				Roact.createElement(FunctionTree),
+			}),
+			Roact.createElement(Window.TitleBar, {
+				onClose = function()
+					return dispatch(activateAction("close"))
+				end,
+				caption = '<font color="#FFFFFF">RemoteSpy</font>    <font color="#B2B2B2">' .. ("0.2.0-alpha" .. "</font>"),
+				captionTransparency = 0.1,
+				icon = "rbxassetid://9886981409",
+			}),
+			Roact.createElement(Window.Resize, {
+				minSize = Vector2.new(650, 450),
+			}),
+		}),
+	})
 end
 local default = pure(MainWindow)
 return {
