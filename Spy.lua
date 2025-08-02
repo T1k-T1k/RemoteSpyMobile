@@ -1136,8 +1136,8 @@ local useRootDispatch = TS.import(script, script.Parent.Parent.Parent, "hooks", 
 
 local function MainWindow()
 	local dispatch = useRootDispatch()
-	local windowWidth = 900
-	local windowHeight = 600
+	local windowWidth = 550
+	local windowHeight = 400
 	local scale = 0.6
 
 	return Roact.createElement(Root, {}, {
