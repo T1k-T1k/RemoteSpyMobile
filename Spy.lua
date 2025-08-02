@@ -1140,40 +1140,15 @@ local function MainWindow()
 	local windowWidth = 900
 	local windowHeight = 600
 	local scale = 0.6
-
+	
 	local position, setPosition = Roact.createBinding(UDim2.new(0.5, -(windowWidth * scale) / 2, 0.5, -(windowHeight * scale) / 2))
 	local dragging = false
 	local dragStart = nil
 	local startPosition = nil
 
-	-- Глобальная обработка touch-ввода (для телефона)
-	UserInputService.InputBegan:Connect(function(input, gameProcessed)
-		if input.UserInputType == Enum.UserInputType.Touch then
-			dragging = true
-			dragStart = input.Position
-			startPosition = position:getValue()
-		end
-	end)
-
-	UserInputService.InputChanged:Connect(function(input)
-		if dragging and input.UserInputType == Enum.UserInputType.Touch then
-			local delta = input.Position - dragStart
-			setPosition(UDim2.new(
-				startPosition.X.Scale, startPosition.X.Offset + delta.X,
-				startPosition.Y.Scale, startPosition.Y.Offset + delta.Y
-			))
-		end
-	end)
-
-	UserInputService.InputEnded:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.Touch then
-			dragging = false
-		end
-	end)
-
-	-- Обработка начала перетаскивания мышью (ПК)
+	-- Обработка начала перетаскивания
 	local function onInputBegan(rbx, input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 			dragging = true
 			dragStart = input.Position
 			startPosition = position:getValue()
@@ -1182,6 +1157,17 @@ local function MainWindow()
 					dragging = false
 				end
 			end)
+		end
+	end
+
+	-- Обработка перемещения
+	local function onInputChanged(_, input)
+		if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+			local delta = input.Position - dragStart
+			setPosition(UDim2.new(
+				startPosition.X.Scale, startPosition.X.Offset + delta.X,
+				startPosition.Y.Scale, startPosition.Y.Offset + delta.Y
+			))
 		end
 	end
 
@@ -1212,7 +1198,7 @@ local function MainWindow()
 				icon = "rbxassetid://9886981409",
 
 				[Roact.Event.InputBegan] = onInputBegan,
-				-- Удаляем InputChanged — он заменён глобальной обработкой
+				[Roact.Event.InputChanged] = onInputChanged,
 			}),
 			Roact.createElement(Window.Resize, {
 				minSize = Vector2.new(650, 450),
