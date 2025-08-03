@@ -3729,11 +3729,15 @@ local function WindowTitleBar(_param)
 		if not dragStart then
 			return nil
 		end
+	
 		local startPos = startPosition:getValue()
 		local shouldMinimize = maximized
+	
 		local mouseMoved = UserInputService.InputChanged:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseMovement then
-				local current = UserInputService:GetMouseLocation()
+			if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+				local current = (input.UserInputType == Enum.UserInputType.Touch)
+					and input.Position
+					or UserInputService:GetMouseLocation()
 				local delta = current - dragStart
 				setPosition(startPos + delta)
 				if shouldMinimize then
@@ -3742,16 +3746,19 @@ local function WindowTitleBar(_param)
 				end
 			end
 		end)
+	
 		local mouseUp = UserInputService.InputEnded:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseButton1 or Enum.UserInputType.Touch then
+			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 				setDragStart(nil)
 			end
 		end)
+	
 		return function()
 			mouseMoved:Disconnect()
 			mouseUp:Disconnect()
 		end
 	end, { dragStart })
+
 	local _attributes = {
 		size = UDim2.new(1, 0, 0, height),
 	}
