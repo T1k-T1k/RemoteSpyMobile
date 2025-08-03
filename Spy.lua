@@ -13748,14 +13748,16 @@ local function useMouse(onChange)
 	local _binding = useBinding(UserInputService:GetMouseLocation())
 	local location = _binding[1]
 	local setLocation = _binding[2]
+
 	useEffect(function()
 		local handle = UserInputService.InputChanged:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseMovement then
-				local location = UserInputService:GetMouseLocation()
-				setLocation(location)
-				local _result = onChange
-				if _result ~= nil then
-					_result(location)
+			if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+				local current = (input.UserInputType == Enum.UserInputType.Touch)
+					and input.Position
+					or UserInputService:GetMouseLocation()
+				setLocation(current)
+				if onChange then
+					onChange(current)
 				end
 			end
 		end)
@@ -13763,6 +13765,7 @@ local function useMouse(onChange)
 			handle:Disconnect()
 		end
 	end, {})
+
 	return location
 end
 return {
