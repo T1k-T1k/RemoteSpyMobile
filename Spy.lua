@@ -3542,14 +3542,18 @@ local function WindowResize(_param)
 		local startPosition = position:getValue()
 		local startSize = size:getValue()
 		local inputBegan = UserInputService.InputChanged:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseMovement then
-				local current = UserInputService:GetMouseLocation()
+			if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+				local current = (input.UserInputType == Enum.UserInputType.Touch) and input.Position or UserInputService:GetMouseLocation()
 				local _mouse = dragStart.mouse
 				local delta = current - _mouse
 				local _arg0 = dragStart.direction * delta
 				local targetSize = startSize + _arg0
-				local targetSizeClamped = Vector2.new(math.clamp(targetSize.X, minSize.X, maxSize.X), math.clamp(targetSize.Y, minSize.Y, maxSize.Y))
+				local targetSizeClamped = Vector2.new(
+					math.clamp(targetSize.X, minSize.X, maxSize.X),
+					math.clamp(targetSize.Y, minSize.Y, maxSize.Y)
+				)
 				setSize(targetSizeClamped)
+		
 				if dragStart.direction.X < 0 and dragStart.direction.Y < 0 then
 					local _arg0_1 = startSize - targetSizeClamped
 					setPosition(startPosition + _arg0_1)
@@ -3560,6 +3564,7 @@ local function WindowResize(_param)
 				end
 			end
 		end)
+
 		local inputEnded = UserInputService.InputEnded:Connect(function(input)
 			if input.UserInputType == Enum.UserInputType.MouseButton1 or Enum.UserInputType.Touch then
 				setDragStart(nil)
