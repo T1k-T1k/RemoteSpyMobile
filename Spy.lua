@@ -2910,7 +2910,7 @@ local function TabColumn(_param)
 			end
 		end)
 		local mouseUp = UserInputService.InputEnded:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			if input.UserInputType == Enum.UserInputType.MouseButton1 or Enum.UserInputType.Touch then
 				setDragState(nil)
 				setDragPosition(nil)
 			end
@@ -3561,7 +3561,7 @@ local function WindowResize(_param)
 			end
 		end)
 		local inputEnded = UserInputService.InputEnded:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			if input.UserInputType == Enum.UserInputType.MouseButton1 or Enum.UserInputType.Touch then
 				setDragStart(nil)
 			end
 		end)
@@ -3738,7 +3738,7 @@ local function WindowTitleBar(_param)
 			end
 		end)
 		local mouseUp = UserInputService.InputEnded:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			if input.UserInputType == Enum.UserInputType.MouseButton1 or Enum.UserInputType.Touch then
 				setDragStart(nil)
 			end
 		end)
